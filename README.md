@@ -1,0 +1,55 @@
+# Yandex::API
+
+Позволяет работать с сервисами Яндекс доступными через API 
+
+Доступные модули:
+*   Direct - Автоматизация рекламных кампаний в Яндекс.Директе (http://direct.yandex.ru/)
+
+## Установка
+
+Добавить в Gemfile эту строчку:
+
+    gem 'yandex-api'
+
+Выполнить команду:
+
+    $ bundle
+
+Или уставновить через gem:
+
+    $ gem install yandex-api
+
+## в Ruby:
+
+Создать конфигурационный файл yandex_direct.yml
+
+    token: "token"
+    application_id: "id"
+    login: "login"
+    locale: "ru"
+    debug: true
+
+Пример работы с gem-ом:
+
+    require 'yandex-api'
+    Yandex::API::Direct.load "yandex_direct.yml"
+
+	campaign = Yandex::API::Direct::CampaignInfo.list.first
+
+	puts campaign.inspect
+	puts campaign.banners.first.inspect
+
+## в Ruby On Rails:
+
+Создать конфигурационный файл yandex_direct.yml
+
+    development:
+	    token: "token"
+	    application_id: "id"
+	    login: "login"
+	    locale: "ru"
+	    debug: true
+
+Добавить в initializers файл yandex_direct.rb
+
+    Yandex::API::Direct.load File.join(Rails.root,"config","yandex_direct.yml"), Rails.env
