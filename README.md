@@ -29,16 +29,6 @@
     locale: "ru"
     debug: true
 
-Пример работы с gem-ом:
-
-    require 'yandex-api'
-    Yandex::API::Direct.load "yandex_direct.yml"
-
-	campaign = Yandex::API::Direct::CampaignInfo.list.first
-
-	puts campaign.inspect
-	puts campaign.banners.first.inspect
-
 ## в Ruby On Rails:
 
 Создать конфигурационный файл yandex_direct.yml
@@ -53,3 +43,12 @@
 Добавить в initializers файл yandex_direct.rb
 
     Yandex::API::Direct.load File.join(Rails.root,"config","yandex_direct.yml"), Rails.env
+
+## Пример работы:
+
+    require 'yandex-api'
+    Yandex::API::Direct.load "yandex_direct.yml"
+
+    campaign = Yandex::API::Direct::CampaignInfo.list.first
+    puts campaign.inspect
+    puts campaign.banners.first.inspect
