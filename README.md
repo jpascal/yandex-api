@@ -27,7 +27,7 @@
     application_id: "id"
     login: "login"
     locale: "ru"
-    debug: true
+    verbose: true
 
 ## в Ruby On Rails:
 
@@ -38,7 +38,7 @@
 	    application_id: "id"
 	    login: "login"
 	    locale: "ru"
-	    debug: true
+	    verbose: true
 
 Добавить в initializers файл yandex_direct.rb
 
