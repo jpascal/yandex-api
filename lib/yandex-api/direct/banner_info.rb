@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # Взаимодействие с API Яндекс.Директа в формате JSON.
 # http://api.yandex.ru/direct/doc/concepts/JSON.xml
