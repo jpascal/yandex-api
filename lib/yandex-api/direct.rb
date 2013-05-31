@@ -38,7 +38,7 @@ module Yandex
           :locale => configuration["locale"],
           :login => configuration["login"],
           :application_id => configuration["application_id"],
-          :token => configuration["application_token"],
+          :token => configuration["token"],
           :method => method
         }
         
