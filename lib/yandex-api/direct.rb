@@ -1,4 +1,5 @@
 require 'net/http'
+require 'net/https'
 require 'json'
 require 'yaml'
 require 'uri'
@@ -37,7 +38,7 @@ module Yandex
           :locale => configuration["locale"],
           :login => configuration["login"],
           :application_id => configuration["application_id"],
-          :token => configuration["application_token"],
+          :token => configuration["token"],
           :method => method
         }
         
