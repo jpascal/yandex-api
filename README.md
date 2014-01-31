@@ -1,5 +1,7 @@
 # Yandex::API
 
+<a href="http://badge.fury.io/rb/yandex-api"><img src="https://badge.fury.io/rb/yandex-api@2x.png" alt="Gem Version" height="18"></a>
+
 Позволяет работать с сервисами Яндекс доступными через API 
 
 Доступные модули:
