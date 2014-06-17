@@ -53,31 +53,31 @@ module Yandex::API
       direct_arrays [:Phrases, BannerPhraseInfo], [:Sitelinks, Sitelink]
       direct_objects [:ContactInfo, ContactInfo]
       def self.find id
-        result = Direct::request("GetBanners", {:BannerIDS => [id]})
+        result = Direct::request('GetBanners', {:BannerIDS => [id]})
         raise Yandex::NotFound.new("not found banner where id = #{id}") unless result.any?
         banner = new(result.first)
       end
       def save
-        Direct::request("CreateOrUpdateBanners", [self.to_hash]).first
+        Direct::request('CreateOrUpdateBanners', [self.to_hash]).first
       end
 
       def archive
-        Direct::request("ArchiveBanners", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('ArchiveBanners', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
       def unarchive
-        Direct::request("UnArchiveCampaign", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('UnArchiveCampaign', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
       def moderate
-        Direct::request("ModerateBanners", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('ModerateBanners', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
       def resume
-        Direct::request("ResumeBanners", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('ResumeBanners', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
       def stop
-        Direct::request("StopBanners", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('StopBanners', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
       def delete
-        Direct::request("DeleteBanners", {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
+        Direct::request('DeleteBanners', {:CampaignID => self.CampaignID, :BannerIDS => [self.BannerID]})
       end
     end
   end

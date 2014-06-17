@@ -7,13 +7,13 @@ require 'uri'
 module Yandex
   module API
     module Direct
-      URL_API = "https://soap.direct.yandex.ru/json-api/v4/"
+      URL_API = 'https://soap.direct.yandex.ru/json-api/v4/'
       
       def self.configuration
-        if defined? @enviroment
-          raise RuntimeError.new("not configured Yandex.Direct for #{@enviroment} enviroment") unless @configuration
+        if defined? @environment
+          raise RuntimeError.new("not configured Yandex.Direct for #{@environment} enviroment") unless @configuration
         else
-          raise RuntimeError.new("not configured Yandex.Direct") unless @configuration
+          raise RuntimeError.new('not configured Yandex.Direct') unless @configuration
         end
         @configuration
       end
@@ -27,25 +27,25 @@ module Yandex
       end
       
       def self.load file, env = nil
-        @enviroment = env if env
+        @environment = env if env
         config = YAML.load_file(file)
-        @configuration = defined?(@enviroment) ? config[@enviroment] : config
+        @configuration = defined?(@environment) ? config[@environment] : config
       end
 
       def self.request method, params = {}
 
         body = {
-          :locale => configuration["locale"],
-          :login => configuration["login"],
-          :application_id => configuration["application_id"],
-          :token => configuration["token"],
+          :locale => configuration['locale'],
+          :login => configuration['login'],
+          :application_id => configuration['application_id'],
+          :token => configuration['token'],
           :method => method
         }
         
         body.merge!({:param => params}) unless params.empty?
         url = URI.parse(URL_API)
 
-        if configuration["verbose"]
+        if configuration['verbose']
           puts "\t\033[32mURL: \033[0m#{URL_API}"
           puts "\t\033[32mMethod: \033[0m#{method}"
           puts "\t\033[32mParams: \033[0m#{params.inspect}"  
@@ -60,13 +60,13 @@ module Yandex
 
         json = Direct.parse_json(response.body)
         
-        if json.has_key?("error_code") and json.has_key?("error_str")
-          code = json["error_code"].to_i
-          error = json["error_detail"].length > 0 ? json["error_detail"] : json["error_str"]
+        if json.has_key?('error_code') and json.has_key?('error_str')
+          code = json['error_code'].to_i
+          error = json['error_detail'].length > 0 ? json['error_detail'] : json['error_str']
           raise RuntimeError.new "#{code} - #{error}"
         end
         
-        return json["data"]
+        return json['data']
       end
     end
   end

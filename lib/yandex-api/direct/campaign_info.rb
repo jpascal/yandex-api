@@ -52,37 +52,37 @@ module Yandex::API
       
       def banners
         banners = []
-        Direct::request("GetBanners", {:CampaignIDS => [self.CampaignID]}).each do |banner|
+        Direct::request('GetBanners', {:CampaignIDS => [self.CampaignID]}).each do |banner|
           banners << BannerInfo.new(banner)
         end
         banners
       end
       def save
-        Direct::request("CreateOrUpdateCampaign", self.to_hash)
+        Direct::request('CreateOrUpdateCampaign', self.to_hash)
       end
       def archive
-        Direct::request("ArchiveCampaign", {:CampaignID => self.CampaignID})
+        Direct::request('ArchiveCampaign', {:CampaignID => self.CampaignID})
       end
       def unarchive
-        Direct::request("UnArchiveCampaign", {:CampaignID => self.CampaignID})
+        Direct::request('UnArchiveCampaign', {:CampaignID => self.CampaignID})
       end
       def resume
-        Direct::request("ResumeCampaign", {:CampaignID => self.CampaignID})
+        Direct::request('ResumeCampaign', {:CampaignID => self.CampaignID})
       end
       def stop
-        Direct::request("StopCampaign", {:CampaignID => self.CampaignID})
+        Direct::request('StopCampaign', {:CampaignID => self.CampaignID})
       end
       def delete
-        Direct::request("DeleteCampaign", {:CampaignID => self.CampaignID})
+        Direct::request('DeleteCampaign', {:CampaignID => self.CampaignID})
       end
       def self.find id
-        result = Direct::request("GetCampaignParams", {:CampaignID => id})
+        result = Direct::request('GetCampaignParams', {:CampaignID => id})
         raise Yandex::NotFound.new("not found campaign where CampaignID = #{id}") if result.empty?
         new(result)
       end
       def self.list
         campaigs = []
-        Direct::request("GetCampaignsList").each do |campaig|
+        Direct::request('GetCampaignsList').each do |campaig|
           campaigs << new(campaig)
         end
         campaigs 
