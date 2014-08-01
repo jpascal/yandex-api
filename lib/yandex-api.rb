@@ -4,6 +4,8 @@ require 'yandex-api/direct/base'
 require 'yandex-api/direct/banner_info'
 require 'yandex-api/direct/campaign_info'
 
+require 'yandex-api/translate'
+
 module Yandex
   module API
     class RuntimeError < RuntimeError ; end
