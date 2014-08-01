@@ -6,6 +6,7 @@
 
 Доступные модули:
 *   Direct - Автоматизация рекламных кампаний в Яндекс.Директе (http://direct.yandex.ru/)
+*   Translate - Позволяет получить доступ к онлайн-сервису машинного перевода Яндекса (http://translate.yandex.ru/)
 
 ## Установка
 
@@ -46,7 +47,7 @@
 
     Yandex::API::Direct.load File.join(Rails.root,"config","yandex_direct.yml"), Rails.env
 
-## Пример работы:
+## Пример работы с Direct:
 
     require 'yandex-api'
     Yandex::API::Direct.load "yandex_direct.yml"
@@ -54,3 +55,12 @@
     campaign = Yandex::API::Direct::CampaignInfo.list.first
     puts campaign.inspect
     puts campaign.banners.first.inspect
+
+## Пример работы с Translate
+
+    require 'yandex-api'
+    Yandex::API::Translate.load "yandex.yml", "production"
+
+    puts Yandex::API::Translate.languages.inspect
+    puts Yandex::API::Translate.detect('test').inspect
+    puts Yandex::API::Translate.do('Hello GitHub', 'ru').inspect
