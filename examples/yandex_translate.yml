@@ -1,9 +1,12 @@
 development:
     token: "token"
     ui: "id"
+    verbose: true
 test:
     token: "token"
     ui: "ui"
+    verbose: true
 production:
     token: "token"
     ui: "ui"
+    verbose: true
