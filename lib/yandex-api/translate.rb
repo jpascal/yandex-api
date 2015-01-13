@@ -47,9 +47,7 @@ module Yandex
       def self.request path, params = {}
 
         if configuration['verbose']
-          puts "\t\033[32mURL: \033[0m#{URL_API}"
-          puts "\t\033[32mMethod: \033[0m#{path}"
-          puts "\t\033[32mParams: \033[0m#{params.inspect}"
+          puts "\t\033[32mYandex.Translate:\033[0m #{params}"
         end
 
         query = (

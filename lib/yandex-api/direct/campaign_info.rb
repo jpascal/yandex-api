@@ -48,7 +48,7 @@ module Yandex::API
       direct_attributes :Login, :CampaignID, :Name, :FIO, :StartDate, :StatusBehavior, :StatusContextStop, :ContextLimit, :ContextLimitSum, :ContextPricePercent,
               :AutoOptimization, :StatusMetricaControl, :DisabledDomains, :DisabledIps, :StatusOpenStat, :ConsiderTimeTarget, :MinusKeywords, :AddRelevantPhrases,
               :RelevantPhrasesBudgetLimit
-      direct_objects [:Strategy, CampaignStrategy], [:SmsNotification, SmsNotification], [:EmailNotification, EmailNotification], [:TimeTarget, TimeTarget]
+      direct_objects :Strategy => CampaignStrategy, :SmsNotification => SmsNotification, :EmailNotification => EmailNotification, :TimeTarget => TimeTarget
       
       def banners
         banners = []

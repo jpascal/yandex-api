@@ -5,4 +5,8 @@ describe Yandex::API::Direct do
   it 'config' do
     expect(Yandex::API::Direct.configuration).not_to be_nil
   end
+  it 'campaigns' do
+    campaigns = Yandex::API::Direct::CampaignInfo.list
+    expect(campaigns).not_to be_nil
+  end
 end

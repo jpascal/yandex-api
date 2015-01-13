@@ -19,7 +19,7 @@ module Yandex::API
     #
     class BannerPhraseInfo < Base
       direct_attributes :PhraseID, :Phrase, :IsRubric, :Price, :AutoBudgetPriority, :ContextPrice, :AutoBroker
-      direct_objects [:UserParams, PhraseUserParams]
+      direct_objects :UserParams => PhraseUserParams
     end
     
     #
@@ -42,7 +42,7 @@ module Yandex::API
     class ContactInfo < Base
       direct_attributes :CompanyName, :ContactPerson, :Country, :CountryCode, :City, :Street, :House, :Build,
         :Apart, :CityCode, :Phone, :PhoneExt, :IMClient, :IMLogin, :ExtraMessage, :ContactEmail, :WorkTime, :OGRN
-      direct_objects [:PointOnMap, MapPoint]
+      direct_objects :PointOnMap => MapPoint
     end
     
     #
@@ -50,8 +50,8 @@ module Yandex::API
     #
     class BannerInfo < Base
       direct_attributes :BannerID, :CampaignID, :Title, :Text, :Href, :Geo, :MinusKeywords
-      direct_arrays [:Phrases, BannerPhraseInfo], [:Sitelinks, Sitelink]
-      direct_objects [:ContactInfo, ContactInfo]
+      direct_arrays :Phrases => BannerPhraseInfo, :Sitelinks => Sitelink
+      direct_objects :ContactInfo => ContactInfo
       def self.find id
         result = Direct::request('GetBanners', {:BannerIDS => [id]})
         raise Yandex::NotFound.new("not found banner where id = #{id}") unless result.any?

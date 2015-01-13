@@ -10,21 +10,21 @@ module Yandex::API::Direct
       end
     end
     def self.objects ; @objects || [] ; end 
-    def self.direct_objects *args
+    def self.direct_objects options
       @objects = []
-      args.each do |object,type|
-        @objects << [object,type]
-        self.class_eval("def #{object};@#{object};end")
-        self.class_eval("def #{object}=(val);@#{object}=val;end")          
+      options.each do |name,type|
+        @objects << [name,type]
+        self.class_eval("def #{name};@#{name};end")
+        self.class_eval("def #{name}=(val);@#{name}=val;end")
       end
     end
     def self.arrays ; @arrays || [] ; end 
-    def self.direct_arrays *args
+    def self.direct_arrays options
       @arrays = []
-      args.each do |array,type|
-        @arrays << [array,type]
-        self.class_eval("def #{array};@#{array};end")
-        self.class_eval("def #{array}=(val);@#{array}=val;end")          
+      options.each do |name,type|
+        @arrays << [name,type]
+        self.class_eval("def #{name};@#{name};end")
+        self.class_eval("def #{name}=(val);@#{name}=val;end")
       end
     end
     def to_hash
@@ -32,7 +32,7 @@ module Yandex::API::Direct
       # build hash of attributes
       self.class.attributes.each do |attribute|
         value = send(attribute)
-        next unless value.present?
+        next unless not value.nil?
         result[attribute] = value
       end
       # build hash of arrays
@@ -45,8 +45,10 @@ module Yandex::API::Direct
         end
       end
       # build hash of objects
-      self.class.objects.each do |object,type|
-        value_hash = send(object).try(:to_hash) || {}
+      self.class.objects.each do |name,type|
+        object = send(name)
+        next if object.nil?
+        value_hash = send(name).to_hash || {}
         next if value_hash.empty?
         result[object] = value_hash
       end

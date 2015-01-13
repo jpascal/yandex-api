@@ -7,8 +7,9 @@ require 'uri'
 module Yandex
   module API
     module Direct
-      URL_API = 'https://soap.direct.yandex.ru/json-api/v4/'
-      
+      URL_API = 'https://api.direct.yandex.ru/v4/json/'
+      URL_API_SANDBOX = 'https://api-sandbox.direct.yandex.ru/v4/json/'
+
       def self.configuration
         if defined? @environment
           raise RuntimeError.new("not configured Yandex.Direct for #{@environment} enviroment") unless @configuration
@@ -30,25 +31,27 @@ module Yandex
         @environment = env.to_s if env
         config = YAML.load_file(file)
         @configuration = defined?(@environment) ? config[@environment] : config
+        @configuration['sandbox'] ||= false
       end
 
       def self.request method, params = {}
 
         body = {
           :locale => configuration['locale'],
-          :login => configuration['login'],
-          :application_id => configuration['application_id'],
           :token => configuration['token'],
           :method => method
         }
-        
-        body.merge!({:param => params}) unless params.empty?
-        url = URI.parse(URL_API)
+
+        if body[:method] == 'GetCampaignsList'
+          body.merge!({:param => [configuration['login']]})
+        else
+          body.merge!({:param => params})
+        end
+
+        url = URI((configuration['sandbox'] ?  URL_API_SANDBOX : URL_API))
 
         if configuration['verbose']
-          puts "\t\033[32mURL: \033[0m#{URL_API}"
-          puts "\t\033[32mMethod: \033[0m#{method}"
-          puts "\t\033[32mParams: \033[0m#{params.inspect}"  
+          puts "\t\033[32mYandex.Direct:\033[0m #{method}(#{body[:param]})"
         end
 
         http = Net::HTTP.new(url.host, url.port)
