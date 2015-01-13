@@ -1,0 +1,9 @@
+development:
+    token: "token"
+    ui: "id"
+test:
+    token: "token"
+    ui: "ui"
+production:
+    token: "token"
+    ui: "ui"

@@ -20,7 +20,7 @@ module Yandex
       end
 
       def self.load file, env = nil
-        @environment = env if env
+        @environment = env.to_s if env
         config = YAML.load_file(file)
         @configuration = defined?(@environment) ? config[@environment] : config
       end
@@ -57,7 +57,7 @@ module Yandex
             :key => configuration['token'],
             :ui => configuration['ui']
           })
-        ).collect {|key,value| "#{key.to_s}=#{CGI.escape(value)}" }.join("&")
+        ).collect {|key,value| "#{key.to_s}=#{CGI.escape(value.to_s)}" }.join("&")
 
         response = connection.send(:get,[File.join('/api/v1.5/tr.json',path.to_s),query].join("?"))
 
@@ -83,7 +83,7 @@ module Yandex
       end
 
       def self.do(text, lang, options = {})
-        result = request(:translate, options.merge({
+        request(:translate, options.merge({
           :text => text,
           :lang => lang
         }))
