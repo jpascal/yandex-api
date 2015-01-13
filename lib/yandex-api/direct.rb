@@ -27,7 +27,7 @@ module Yandex
       end
       
       def self.load file, env = nil
-        @environment = env if env
+        @environment = env.to_s if env
         config = YAML.load_file(file)
         @configuration = defined?(@environment) ? config[@environment] : config
       end

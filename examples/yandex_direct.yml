@@ -1,0 +1,18 @@
+development:
+    token: "token"
+    application_id: "id"
+    login: "login"
+    locale: "ru"
+    verbose: true
+test:
+    token: "token"
+    application_id: "id"
+    login: "login"
+    locale: "ru"
+    verbose: true
+production:
+    token: "token"
+    application_id: "id"
+    login: "login"
+    locale: "ru"
+    verbose: true
