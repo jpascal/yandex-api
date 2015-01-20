@@ -6,7 +6,7 @@ module Yandex::API::Direct
       args.each do |arg|
         @attributes << arg
         self.class_eval("def #{arg};@#{arg};end")
-        self.class_eval("def #{arg}=(val);@#{arg}=val;end")          
+        self.class_eval("def #{arg}=(val);@#{arg}=val;end")
       end
     end
     def self.objects ; @objects || [] ; end 
@@ -45,12 +45,12 @@ module Yandex::API::Direct
         end
       end
       # build hash of objects
-      self.class.objects.each do |name,type|
+      self.class.objects.each do |name,_|
         object = send(name)
         next if object.nil?
         value_hash = send(name).to_hash || {}
         next if value_hash.empty?
-        result[object] = value_hash
+        result[name] = value_hash
       end
       result
     end
