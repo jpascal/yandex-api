@@ -2,31 +2,34 @@
 
 <a href="http://badge.fury.io/rb/yandex-api"><img src="https://badge.fury.io/rb/yandex-api@2x.png" alt="Gem Version" height="18"></a>
 
-Позволяет работать с сервисами Яндекс доступными через API 
+Allow you work with any Yandex.APIs
 
-Доступные модули:
-*   Direct - Автоматизация рекламных кампаний в Яндекс.Директе (http://direct.yandex.ru/)
-*   Translate - Позволяет получить доступ к онлайн-сервису машинного перевода Яндекса (http://translate.yandex.ru/)
+Modules:
 
-## Установка
+*  Direct - contain classes and methods for work with Yandex.Direct (http://direct.yandex.ru/)
+*  Translate - contain methods for work with Yandex.Translate (http://translate.yandex.ru/)
 
-Добавить в Gemfile эту строчку:
 
-    gem 'yandex-api'
+## Installation
 
-Выполнить команду:
+Add this line to your application's Gemfile:
+
+```
+gem 'yandex-api'
+```
+
+And then execute:
 
     $ bundle
 
-Или уставновить через gem:
+Or install it yourself as:
 
     $ gem install yandex-api
-
 
 ## Direct
 ### в Ruby:
 
-Создать конфигурационный файл yandex_direct.yml
+Create configuration file yandex_direct.yml
 
     token: token
     login: login
@@ -36,7 +39,7 @@
 
 ### в Ruby On Rails:
 
-Создать конфигурационный файл yandex_direct.yml
+Create configuration file yandex_direct.yml
 
     development:
         token: token
@@ -45,11 +48,11 @@
         verbose: true
         sandbox: true
 
-Добавить в initializers файл yandex_direct.rb
+Create yandex_direct.rb in config/initializers
 
     Yandex::API::Direct.load File.join(Rails.root,"config","yandex_direct.yml"), Rails.env
 
-### Пример работы:
+### Simple example:
 
     require 'yandex-api'
     Yandex::API::Direct.load "yandex_direct.yml"
@@ -61,7 +64,7 @@
 ## Translate
 ### в Ruby:
 
-Создать конфигурационный файл yandex_direct.yml
+Create configuration file yandex_translate.yml
 
     token: "token"
     ui: true
@@ -69,19 +72,19 @@
 
 ### в Ruby On Rails:
 
-Создать конфигурационный файл yandex_translate.yml
+Create configuration file yandex_translate.yml
 
     development:
 	    token: "token"
         ui: "ru"
         verbose: true
         
-Добавить в initializers файл yandex_translate.rb
+Create yandex_translate.rb in config/initializers
 
     Yandex::API::Translate.load File.join(Rails.root,"config","yandex_translate.yml"), Rails.env
 
 
-### Пример работы
+### Simple example
 
     require 'yandex-api'
     Yandex::API::Translate.load "yandex.yml", "production"
