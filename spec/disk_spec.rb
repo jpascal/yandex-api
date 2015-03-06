@@ -12,34 +12,50 @@ describe Yandex::API::Disk do
   end
 
   it 'create/remove directory' do
-    expect(storage.mkdir!('disk:/test')).to eql(true)
+    expect(storage.mkdir('disk:/test')).to eql(true)
     expect(storage.rm!('disk:/test')).to eql(true)
   end
 
   it 'write/remove file' do
     file = File.open(__FILE__)
-    expect(storage.write!(file, 'disk:/test.rb')).to eql(true)
-    expect(storage.rm!('disk:/test.rb')).to eql(true)
-  end
-
-  it 'upload/move file' do
-    file = File.open(__FILE__)
-    expect(storage.write!(file, 'disk:/test.rb')).to eql(true)
-    expect(storage.move!('disk:/test.rb', 'disk:/test33.rb')).to eql(true)
-    expect(storage.rm('disk:/test33.rb')).to eql(true)
-  end
-
-  it 'upload/copy file' do
-    file = File.open(__FILE__)
-    expect(storage.write!(file, 'disk:/test.rb')).to eql(true)
-    expect(storage.copy!('disk:/test.rb', 'disk:/test33.rb')).to eql(true)
-    expect(storage.rm('disk:/test33.rb')).to eql(true)
+    expect(storage.write(file, 'disk:/test.rb')).to eql(true)
     expect(storage.rm('disk:/test.rb')).to eql(true)
   end
 
+  it 'write/move file' do
+    file = File.open(__FILE__)
+    expect(storage.write(file, 'disk:/test.rb')).to eql(true)
+    expect(storage.move('disk:/test.rb', 'disk:/test33.rb')).to eql(true)
+    expect(storage.rm!('disk:/test33.rb')).to eql(true)
+  end
+
+  it 'write/copy file' do
+    file = File.open(__FILE__)
+    expect(storage.write(file, 'disk:/test.rb')).to eql(true)
+    expect(storage.copy('disk:/test.rb', 'disk:/test33.rb')).to eql(true)
+    expect(storage.rm!('disk:/test33.rb')).to eql(true)
+    expect(storage.rm!('disk:/test.rb')).to eql(true)
+  end
+
+  it 'write/remove/clean' do
+    file = File.open(__FILE__)
+    expect(storage.write(file, 'disk:/test.rb')).to eql(true)
+    expect(storage.rm('disk:/test.rb')).to eql(true)
+    expect(storage.clean!('/test.rb')).to eql(true)
+  end
+
+  it 'write/remove/restore' do
+    file = File.open(__FILE__)
+    expect(storage.write(file, 'disk:/test.rb')).to eql(true)
+    expect(storage.rm('disk:/test.rb')).to eql(true)
+    expect(storage.restore!('/test.rb')).to eql(true)
+    expect(storage.rm!('disk:/test.rb')).to eql(true)
+  end
+
   after do
-    storage.rm!('disk:/test')
-    storage.rm!('disk:/test.rb')
-    storage.rm!('disk:/test33.rb')
+    storage.rm('disk:/test')
+    storage.rm('disk:/test.rb')
+    storage.rm('disk:/test33.rb')
+    storage.clean
   end
 end
