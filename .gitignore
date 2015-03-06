@@ -17,3 +17,6 @@ test/version_tmp
 tmp
 yandex_direct.yml
 yandex_translate.yml
+.ruby-version
+yandex-api.iml
+spec/yandex_disk.yml
