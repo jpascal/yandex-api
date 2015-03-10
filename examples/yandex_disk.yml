@@ -1,0 +1,9 @@
+development:
+    token: token
+    verbose: true
+test:
+    token: token
+    verbose: true
+production:
+    token: token
+    verbose: true

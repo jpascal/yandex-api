@@ -8,6 +8,7 @@ Modules:
 
 *  Direct - contain classes and methods for work with Yandex.Direct (http://direct.yandex.ru/)
 *  Translate - contain methods for work with Yandex.Translate (http://translate.yandex.ru/)
+*  Disk - contain methods for work with Yandex.Disk (http://disk.yandex.ru/)
 
 
 ## Installation
@@ -93,6 +94,45 @@ Create yandex_translate.rb in config/initializers
     puts Yandex::API::Translate.detect('test').inspect
     puts Yandex::API::Translate.do('Hello GitHub', 'ru').inspect
 
+
+## Disk
+
+Create configuration file yandex_disk.yml
+
+    token: "token"
+    verbose: true
+
+### в Ruby On Rails:
+
+Create configuration file yandex_disk.yml
+
+    development:
+	    token: "token"
+        verbose: true
+
+### Simple example
+
+    require 'yandex-api'
+    Yandex::API::Disk.load "yandex_disk.yml", "production"
+
+    include Yandex::API::Disk
+
+    storage = Storage.new
+    puts "Storage:\n\ttrash: #{storage.trash_size} bytes\n\ttotal: #{storage.total_space} bytes\n\tused: #{storage.used_space} bytes"
+    Storage.upload(File.open('foo'), 'disk:/bar')
+    Storage.move('disk:/bar', 'disk:/foo')
+    Storage.rm('disk:/foo')
+    Storage.clean('disk:/foo')
+
+### Storage class has methods
+
+    Storage.rm(path)            # remove directory
+    Storage.write(file, path)   # upload file to path
+    Storage.move(from, to)      # move file from -> to
+    Storage.copy(from, to)      # copy file form -> to
+    Storage.clean(path)         # clean trash (if path nil, clena all)
+    Storage.mkdir(path)         # create directory
+    Storage.exists?(path)       # existing path or not?
 
 ## Contributing
 
