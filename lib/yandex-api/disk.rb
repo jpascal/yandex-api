@@ -1,3 +1,4 @@
+require 'time'
 module Yandex
   module API
     module Disk
@@ -104,81 +105,83 @@ module Yandex
           super Disk::request(:get, '/v1/disk/')
         end
 
-        def ls(path)
-          response = Disk::request(:get,  "/v1/disk/resources?path=#{path}")['_embedded'] || {}
-          response['items'] ||= []
-          response['items'].collect do |item|
-            case item['type']
-              when 'dir' then
-                Disk::Folder.new(item)
-              when 'file' then
-                Disk::Object.new(item)
+        class << self
+          def ls(path)
+            response = Disk::request(:get,  "/v1/disk/resources?path=#{path}")['_embedded'] || {}
+            response['items'] ||= []
+            response['items'].collect do |item|
+              case item['type']
+                when 'dir' then
+                  Disk::Folder.new(item)
+                when 'file' then
+                  Disk::Object.new(item)
+              end
             end
           end
-        end
-        def exists?(path)
-          Disk::request :get, "/v1/disk/resources?path=#{path}"
-        end
-
-        def mkdir!(path)
-          Disk::request :put, "/v1/disk/resources?path=#{path}"
-          true
-        end
-        def mkdir(path)
-          mkdir!(path) rescue false
-        end
-
-        def rm!(path)
-          Disk::request :delete, "/v1/disk/resources?path=#{path}"
-          true
-        end
-        def rm(path)
-          rm!(path) rescue false
-        end
-
-        def copy!(from, to)
-          Disk::request :post, "/v1/disk/resources/copy?from=#{from}&path=#{to}"
-          true
-        end
-        def copy(from, to)
-          copy!(from, to) rescue false
-        end
-
-        def move!(from, to)
-          Disk::request :post, "/v1/disk/resources/move?from=#{from}&path=#{to}"
-          true
-        end
-        def move(from, to)
-          move!(from,to) rescue false
-        end
-
-        def write!(file, to)
-          params = Disk::request :get, "/v1/disk/resources/upload?path=#{to}"
-          Disk::upload(file, to.split('/').last, params['href'])
-          true
-        end
-        def write(file, to)
-          write!(file, to) rescue false
-        end
-
-        def clean!(path = nil)
-          if path
-            Disk::request :delete, "/v1/disk/trash/resources?path=#{path}"
-          else
-            Disk::request :delete, "/v1/disk/trash/resources"
+          def exists?(path)
+            Disk::request :get, "/v1/disk/resources?path=#{path}"
           end
-          true
-        end
-        def clean(path = nil)
-          clear!(path) rescue false
-        end
 
-        def restore!(path, to = path)
-          Disk::request :put, "/v1/disk/trash/resources/restore?path=#{to}&name=#{path}"
-          true
-        end
-        def restore(path, to = path)
-          restore!(path, to) rescue false
+          def mkdir!(path)
+            Disk::request :put, "/v1/disk/resources?path=#{path}"
+            true
+          end
+          def mkdir(path)
+            mkdir!(path) rescue false
+          end
+
+          def rm!(path)
+            Disk::request :delete, "/v1/disk/resources?path=#{path}"
+            true
+          end
+          def rm(path)
+            rm!(path) rescue false
+          end
+
+          def copy!(from, to)
+            Disk::request :post, "/v1/disk/resources/copy?from=#{from}&path=#{to}"
+            true
+          end
+          def copy(from, to)
+            copy!(from, to) rescue false
+          end
+
+          def move!(from, to)
+            Disk::request :post, "/v1/disk/resources/move?from=#{from}&path=#{to}"
+            true
+          end
+          def move(from, to)
+            move!(from,to) rescue false
+          end
+
+          def write!(file, to)
+            params = Disk::request :get, "/v1/disk/resources/upload?path=#{to}"
+            Disk::upload(file, to.split('/').last, params['href'])
+            true
+          end
+          def write(file, to)
+            write!(file, to) rescue false
+          end
+
+          def clean!(path = nil)
+            if path.nil?
+              Disk::request :delete, "/v1/disk/trash/resources"
+            else
+              Disk::request :delete, "/v1/disk/trash/resources?path=#{path}"
+            end
+            true
+          end
+          def clean(path = nil)
+            clean!(path) rescue false
+          end
+
+          def restore!(path, to = path)
+            Disk::request :put, "/v1/disk/trash/resources/restore?path=#{to}&name=#{path}"
+            true
+          end
+          def restore(path, to = path)
+            restore!(path, to) rescue false
+          end
         end
       end
     end
