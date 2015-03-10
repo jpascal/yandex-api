@@ -40,7 +40,6 @@ describe Yandex::API::Disk do
     file = File.open(__FILE__)
     expect(Storage.write!(file, 'disk:/test.rb')).to eql(true)
     expect(Storage.rm!('disk:/test.rb')).to eql(true)
-    expect(Storage.clean!('/test.rb')).to eql(true)
     expect(Storage.clean!('test.rb')).to eql(true)
   end
 
