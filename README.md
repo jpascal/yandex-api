@@ -28,7 +28,7 @@ Or install it yourself as:
     $ gem install yandex-api
 
 ## Direct
-### в Ruby:
+### Ruby:
 
 Create configuration file yandex_direct.yml
 
@@ -38,7 +38,7 @@ Create configuration file yandex_direct.yml
     verbose: true
     sandbox: true
 
-### в Ruby On Rails:
+### Ruby On Rails:
 
 Create configuration file yandex_direct.yml
 
@@ -63,7 +63,7 @@ Create yandex_direct.rb in config/initializers
     puts campaign.banners.first.inspect
 
 ## Translate
-### в Ruby:
+### Ruby:
 
 Create configuration file yandex_translate.yml
 
@@ -71,7 +71,7 @@ Create configuration file yandex_translate.yml
     ui: true
     verbose: true
 
-### в Ruby On Rails:
+### Ruby On Rails:
 
 Create configuration file yandex_translate.yml
 
@@ -102,7 +102,7 @@ Create configuration file yandex_disk.yml
     token: "token"
     verbose: true
 
-### в Ruby On Rails:
+### Ruby On Rails:
 
 Create configuration file yandex_disk.yml
 

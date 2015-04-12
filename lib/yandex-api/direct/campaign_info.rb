@@ -13,33 +13,33 @@ module Yandex::API
     class CampaignStrategy < Base
       direct_attributes :StrategyName, :MaxPrice, :AveragePrice, :WeeklySumLimit, :ClicksPerWeek
     end
-    
+
     #
     # = SmsNotification
     #
     class SmsNotification < Base
       direct_attributes :MetricaSms, :ModerateResultSms, :MoneyInSms, :MoneyOutSms, :SmsTimeFrom, :SmsTimeTo
     end
-    
+
     #
     # = EmailNotification
     #
     class EmailNotification < Base
       direct_attributes :Email, :WarnPlaceInterval, :MoneyWarningValue, :SendAccNews, :SendWarn
     end
-    
+
     #
     # = TimeTargetInfo
     #
     class TimeTarget < Base
-      direct_attributes :ShowOnHolidays, :HolidayShowFrom, :HolidayShowTo, :DaysHours, :TimeZone  
+      direct_attributes :ShowOnHolidays, :HolidayShowFrom, :HolidayShowTo, :DaysHours, :TimeZone
     end
 
     #
     # = TimeTargetItem
     #
     class TimeTargetItem < Base
-      direct_attributes :Days, :Hours  
+      direct_attributes :Days, :Hours
     end
     #
     # = CampaignInfo
@@ -47,9 +47,10 @@ module Yandex::API
     class CampaignInfo < Base
       direct_attributes :Login, :CampaignID, :Name, :FIO, :StartDate, :StatusBehavior, :StatusContextStop, :ContextLimit, :ContextLimitSum, :ContextPricePercent,
               :AutoOptimization, :StatusMetricaControl, :DisabledDomains, :DisabledIps, :StatusOpenStat, :ConsiderTimeTarget, :MinusKeywords, :AddRelevantPhrases,
-              :RelevantPhrasesBudgetLimit
+              :RelevantPhrasesBudgetLimit, :Sum, :Rest, :SumAvailableForTransfer, :Shows, :Clicks, :Status, :StatusShow, :StatusArchive, :StatusActivating,
+              :StatusModerate, :IsActive, :ManagerName, :AgencyName
       direct_objects :Strategy => CampaignStrategy, :SmsNotification => SmsNotification, :EmailNotification => EmailNotification, :TimeTarget => TimeTarget
-      
+
       def banners
         banners = []
         Direct::request('GetBanners', {:CampaignIDS => [self.CampaignID]}).each do |banner|
@@ -81,11 +82,11 @@ module Yandex::API
         new(result)
       end
       def self.list
-        campaigs = []
+        campaigns = []
         Direct::request('GetCampaignsList').each do |campaig|
-          campaigs << new(campaig)
+          campaigns << new(campaig)
         end
-        campaigs 
+        campaigns
       end
     end
   end
