@@ -7,9 +7,6 @@ require 'uri'
 module Yandex
   module API
     module Direct
-
-
-      
       URL_API = 'https://api.direct.yandex.ru/v4/json/'
       URL_API_SANDBOX = 'https://api-sandbox.direct.yandex.ru/v4/json/'
 

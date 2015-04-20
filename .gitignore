@@ -5,3 +5,4 @@ yandex_translate.yml
 .ruby-version
 yandex-api.iml
 spec/yandex_disk.yml
+.idea
