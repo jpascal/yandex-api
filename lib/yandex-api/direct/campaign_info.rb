@@ -2,7 +2,7 @@
 # Взаимодействие с API Яндекс.Директа в формате JSON.
 # http://api.yandex.ru/direct/doc/concepts/JSON.xml
 #
-# (c) Copyright 2012 Евгений Шурмин. All Rights Reserved. 
+# (c) Copyright 2012 Евгений Шурмин. All Rights Reserved.
 #
 
 module Yandex::API
@@ -45,48 +45,55 @@ module Yandex::API
     # = CampaignInfo
     #
     class CampaignInfo < Base
-      direct_attributes :Login, :CampaignID, :Name, :FIO, :StartDate, :StatusBehavior, :StatusContextStop, :ContextLimit, :ContextLimitSum, :ContextPricePercent,
-              :AutoOptimization, :StatusMetricaControl, :DisabledDomains, :DisabledIps, :StatusOpenStat, :ConsiderTimeTarget, :MinusKeywords, :AddRelevantPhrases,
-              :RelevantPhrasesBudgetLimit, :Sum, :Rest, :SumAvailableForTransfer, :Shows, :Clicks, :Status, :StatusShow, :StatusArchive, :StatusActivating,
-              :StatusModerate, :IsActive, :ManagerName, :AgencyName
-      direct_objects :Strategy => CampaignStrategy, :SmsNotification => SmsNotification, :EmailNotification => EmailNotification, :TimeTarget => TimeTarget
+      direct_attributes :Login, :CampaignID, :Name, :FIO, :StartDate, :StatusBehavior, :StatusContextStop,
+                        :ContextLimit, :ContextLimitSum, :ContextPricePercent,
+                        :AutoOptimization, :StatusMetricaControl, :DisabledDomains, :DisabledIps, :StatusOpenStat,
+                        :ConsiderTimeTarget, :MinusKeywords, :AddRelevantPhrases,
+                        :RelevantPhrasesBudgetLimit, :Sum, :Rest, :SumAvailableForTransfer, :Shows, :Clicks, :Status,
+                        :StatusShow, :StatusArchive, :StatusActivating,
+                        :StatusModerate, :IsActive, :ManagerName, :AgencyName
+      direct_objects Strategy: CampaignStrategy, SmsNotification: SmsNotification, EmailNotification: EmailNotification, TimeTarget: TimeTarget
 
       def banners
-        banners = []
-        Direct::request('GetBanners', {:CampaignIDS => [self.CampaignID]}).each do |banner|
-          banners << BannerInfo.new(banner)
+        Direct.request('GetBanners', CampaignIDS: [self.CampaignID]).map do |banner|
+          BannerInfo.new(banner)
         end
-        banners
       end
+
       def save
-        Direct::request('CreateOrUpdateCampaign', self.to_hash)
+        Direct.request('CreateOrUpdateCampaign', to_hash)
       end
+
       def archive
-        Direct::request('ArchiveCampaign', {:CampaignID => self.CampaignID})
+        Direct.request('ArchiveCampaign', CampaignID: self.CampaignID)
       end
+
       def unarchive
-        Direct::request('UnArchiveCampaign', {:CampaignID => self.CampaignID})
+        Direct.request('UnArchiveCampaign', CampaignID: self.CampaignID)
       end
+
       def resume
-        Direct::request('ResumeCampaign', {:CampaignID => self.CampaignID})
+        Direct.request('ResumeCampaign', CampaignID: self.CampaignID)
       end
+
       def stop
-        Direct::request('StopCampaign', {:CampaignID => self.CampaignID})
+        Direct.request('StopCampaign', CampaignID: self.CampaignID)
       end
+
       def delete
-        Direct::request('DeleteCampaign', {:CampaignID => self.CampaignID})
+        Direct.request('DeleteCampaign', CampaignID: self.CampaignID)
       end
-      def self.find id
-        result = Direct::request('GetCampaignParams', {:CampaignID => id})
-        raise Yandex::NotFound.new("not found campaign where CampaignID = #{id}") if result.empty?
+
+      def self.find(id)
+        result = Direct.request('GetCampaignParams', CampaignID: id)
+        raise Yandex::NotFound, "not found campaign where CampaignID = #{id}" if result.empty?
         new(result)
       end
+
       def self.list
-        campaigns = []
-        Direct::request('GetCampaignsList').each do |campaig|
-          campaigns << new(campaig)
+        Direct.request('GetCampaignsList').map do |campaig|
+          new(campaig)
         end
-        campaigns
       end
     end
   end
