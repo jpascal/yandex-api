@@ -1,0 +1,15 @@
+AllCops:
+  Include:
+    - Rakefile
+  Exclude:
+    - tmp/**/*
+  Rails:
+    Enabled: true
+Documentation:
+  Enabled: false
+LineLength:
+  Max: 150
+Style/AlignHash:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false

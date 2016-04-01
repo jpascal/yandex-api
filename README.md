@@ -51,7 +51,7 @@ Create configuration file yandex_direct.yml
 
 Create yandex_direct.rb in config/initializers
 
-    Yandex::API::Direct.load File.join(Rails.root,"config","yandex_direct.yml"), Rails.env
+    Yandex::API::Direct.load File.join(Rails.root, "config", "yandex_direct.yml"), Rails.env
 
 ### Simple example:
 
@@ -79,10 +79,10 @@ Create configuration file yandex_translate.yml
 	    token: "token"
         ui: "ru"
         verbose: true
-        
+
 Create yandex_translate.rb in config/initializers
 
-    Yandex::API::Translate.load File.join(Rails.root,"config","yandex_translate.yml"), Rails.env
+    Yandex::API::Translate.load File.join(Rails.root, "config", "yandex_translate.yml"), Rails.env
 
 
 ### Simple example
