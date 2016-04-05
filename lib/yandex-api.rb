@@ -1,7 +1,6 @@
 require 'yandex-api/version'
 require 'yandex-api/direct'
 require 'yandex-api/direct/base'
-require 'yandex-api/direct/base/hash_serializer'
 require 'yandex-api/direct/banner_info'
 require 'yandex-api/direct/campaign_info'
 require 'yandex-api/translate'
