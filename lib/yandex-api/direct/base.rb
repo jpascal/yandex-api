@@ -10,13 +10,13 @@ module Yandex::API::Direct
       def attributes
         @attributes
       end
-      delegate :select, :limit, :offset, :where, :get, to: :relation
+      delegate :select, :limit, :offset, :where, to: :request
       def path
         self.name.demodulize.pluralize.downcase
       end
     protected
-      def relation
-        Relation.new(self)
+      def request
+        Request.new(self)
       end
     end
   end

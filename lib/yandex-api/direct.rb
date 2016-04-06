@@ -9,7 +9,7 @@ require 'active_model'
 require 'active_model/serializers/json'
 
 require_relative 'direct/error'
-require_relative 'direct/relation'
+require_relative 'direct/request'
 require_relative 'direct/base'
 require_relative 'direct/campaign'
 require_relative 'direct/bid'
@@ -59,6 +59,8 @@ module Yandex
            'Accept-Language' => configuration['locale'],
            'Content-Type' => 'application/json; charset=utf-8'
         })
+
+        raise "Yandex.Direct response with status #{response.status}" unless response.success?
 
         response = JSON.parse(response.body)
 

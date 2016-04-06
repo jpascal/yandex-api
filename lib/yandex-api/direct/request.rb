@@ -1,12 +1,12 @@
 module Yandex::API::Direct
-  class Relation
+  class Request
     protected
     attr_accessor :selection_criteria, :field_names, :page_limit, :page_offset
     public
     attr_accessor :object
     def initialize(object)
       self.object = object
-      self.field_names = object.attributes
+      self.field_names = nil
     end
     def select(*field_names)
       self.field_names = Array(field_names)
@@ -20,20 +20,23 @@ module Yandex::API::Direct
       self.page_offset = value
       self
     end
-    def where(criteria)
+    def where(criteria = {})
       (self.selection_criteria ||= {}).merge!(criteria)
       self
     end
-    def get
-      Yandex::API::Direct.decode(self.object, Yandex::API::Direct.request(:get, self.object.path, self.to_param))
+    def call(method)
+      puts "[#{self.object.name}](#{method}): #{self.to_param}"
+      Yandex::API::Direct.decode(self.object, Yandex::API::Direct.request(method, self.object.path, self.to_param))
     end
-    def to_param
+
+    def to_param(hash = {})
       params = {
           'SelectionCriteria' => (self.selection_criteria.nil? ? {} : self.selection_criteria),
-          'FieldNames' => (self.field_names.nil? ? [] : Array(self.field_names).flatten.uniq)
       }
+      params.merge!({'FieldNames' => Array(self.field_names).flatten.uniq}) unless self.field_names.nil?
       params.merge!({'Page' => {'Offset' => self.page_offset}}) if self.page_offset
       params.merge!({'Page' => {'Limit' => self.page_limit}}) if self.page_limit
+      params.merge!(hash)
       params
     end
   end
