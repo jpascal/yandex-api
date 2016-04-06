@@ -1,5 +1,5 @@
 module Yandex::API::Direct
   class Campaign < Base
-    attr_accessor :Id, :Name
+    fields :Id, :Name
   end
 end

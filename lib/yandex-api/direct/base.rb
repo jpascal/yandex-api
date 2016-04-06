@@ -3,9 +3,9 @@ module Yandex::API::Direct
     include ActiveModel::Model
     include ActiveModel::Serialization
     class << self
-      def attr_accessor(*args)
+      def fields(*args)
         @attributes = *args
-        super(*args)
+        attr_accessor *args
       end
       def attributes
         @attributes
