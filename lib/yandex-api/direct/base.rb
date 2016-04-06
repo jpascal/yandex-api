@@ -7,75 +7,112 @@ require 'faraday'
 module Yandex::API::Direct
 
   class Error < RuntimeError
-    attr_accessor :request_id, :code, :message, :detail
-    def initialize(request_id, code, message, detail)
+    attr_accessor :request_id, :code, :text, :detail
+    def initialize(request_id, code, text, detail)
       self.request_id = request_id
       self.code = code
-      self.message = message
+      self.text = text
       self.detail = detail
     end
-    def to_s
-      "#{self.message} (#{self.code})"
+    def message
+      "#{self.text} (#{self.code}): #{self.detail}"
     end
   end
 
-  SERVICE = 'https://api.direct.yandex.com/json/v5'
+  SERVICE = 'https://api-sandbox.direct.yandex.com/json/v5'
 
-  class Bid
-    def self.attr_accessor(*args)
-      @attributes = *args
-      super(*args)
+  class Relation
+  protected
+    attr_accessor :selection_criteria, :field_names, :page_limit, :page_offset
+  public
+    attr_accessor :object
+    def initialize(object)
+      self.object = object
+      self.field_names = object.attributes
     end
-    def self.attributes
-      @attributes
+    def select(*field_names)
+      self.field_names = Array(field_names)
+      self
     end
+    def limit(value)
+      self.page_limit = value
+      self
+    end
+    def offset(value)
+      self.page_offset = value
+      self
+    end
+    def where(criteria)
+      (self.selection_criteria ||= {}).merge!(criteria)
+      self
+    end
+    def get
+      Yandex::API::Direct.decode(self.object, Yandex::API::Direct.request(:get, self.object.path, self.to_param))
+    end
+    def to_param
+      params = {
+          'SelectionCriteria' => (self.selection_criteria.nil? ? {} : self.selection_criteria),
+          'FieldNames' => (self.field_names.nil? ? [] : Array(self.field_names).flatten.uniq)
+      }
+      params.merge!({'Page' => {'Offset' => self.page_offset}}) if self.page_offset
+      params.merge!({'Page' => {'Limit' => self.page_limit}}) if self.page_limit
+      params
+    end
+  end
 
+  class Model
     include ActiveModel::Model
     include ActiveModel::Serialization
+    class << self
+      def attr_accessor(*args)
+        @attributes = *args
+        super(*args)
+      end
+      def attributes
+        @attributes
+      end
+      delegate :select, :limit, :offset, :where, :get, to: :relation
+      def path
+        self.name.demodulize.pluralize.downcase
+      end
+    protected
+      def relation
+        Relation.new(self)
+      end
+    end
+  end
+
+  class Bid < Model
     attr_accessor :KeywordId, :Bid, :ContextBid
   end
 
-  def self.decode(json)
-    result = []
-    JSON.parse!(json)['result'].map do |object, objects|
-      object = "Yandex::API::Direct::#{object.singularize.camelize}".constantize
-      objects.map do |params|
-        result << object.new(params)
-      end
-    end
-    result
+  class Campaign < Model
+    attr_accessor :Id, :Name
+  end
+
+  def self.decode(object, response)
+    response['result'][object.name.pluralize.demodulize].map{ |attributes| object.new(attributes) }
   end
 
   def self.encode(object)
     object.to_json
   end
 
-  def self.namespace(object)
-    object.name.demodulize.pluralize.downcase
-  end
-
-  def self.selection(conditions = nil, *fields)
-    {
-        'SelectionCriteria' => (conditions.nil? ? {} : conditions),
-        'FieldNames' => (fields.nil? ? [] : Array(fields).flatten.uniq)
-    }
-  end
-
-  def self.request(method, namespace, params = nil)
+  def self.request(method, path, params = nil)
     connection = Faraday.new(url: SERVICE) do |faraday|
       faraday.adapter  Faraday.default_adapter
     end
-    response = connection.post(namespace, {
+    response = connection.post(path, {
         'method' => method,
         'params' => params || {}
     }.to_json, {
-        'Authorization' => 'Bearer asdasdasdasd',
-        'Client-Login' => 'agrom',
+        'Authorization' => 'Bearer f0db0f69f2e54bedba7f1cc23f336714',
+        'Client-Login' => 'eshurmin',
         'Accept-Language' => 'ru',
         'Content-Type' => 'application/json; charset=utf-8'
     })
 
-    response = JSON.parse!(response.body)
+    response = JSON.parse(response.body)
 
     if (error = response['error'])
       raise Error.new(error['request_id'], error['error_code'], error['error_string'], error['error_detail'])
