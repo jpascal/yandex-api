@@ -1,14 +1,25 @@
-require 'net/http'
-require 'net/https'
 require 'json'
 require 'yaml'
 require 'uri'
+require 'faraday'
+
+require 'active_support/inflector'
+require 'active_support/hash_with_indifferent_access'
+require 'active_model'
+require 'active_model/serializers/json'
+
+require_relative 'direct/error'
+require_relative 'direct/relation'
+require_relative 'direct/base'
+require_relative 'direct/campaign'
+require_relative 'direct/bid'
+require_relative 'direct/bid'
 
 module Yandex
   module API
     module Direct
-      URL_API = 'https://api.direct.yandex.ru/v4/json/'.freeze
-      URL_API_SANDBOX = 'https://api-sandbox.direct.yandex.ru/v4/json/'.freeze
+      URL_API = 'https://api.direct.yandex.com/json/v5'.freeze
+      URL_API_SANDBOX = 'https://api-sandbox.direct.yandex.com/json/v5'.freeze
 
       def self.configuration
         if defined? @environment
@@ -19,10 +30,12 @@ module Yandex
         @configuration
       end
 
-      def self.parse_json(json)
-        return JSON.parse(json)
-      rescue => e
-        raise "#{e.message} in response"
+      def self.decode(object, response)
+        response['result'][object.name.pluralize.demodulize].map{ |attributes| object.new(attributes) }
+      end
+
+      def self.encode(object)
+        object.to_json
       end
 
       def self.load(file, env = nil)
@@ -32,39 +45,28 @@ module Yandex
         @configuration['sandbox'] ||= false
       end
 
-      def self.request(method, params = {})
-        body = {
-          locale: configuration['locale'],
-          token: configuration['token'],
-          method: method
-        }
-
-        body[:param] = if body[:method] == 'GetCampaignsList'
-                         [configuration['login']]
-                       else
-                         params
-                       end
-
-        url = URI(configuration['sandbox'] ? URL_API_SANDBOX : URL_API)
-
-        puts "\t\033[32mYandex.Direct:\033[0m #{method}(#{body[:param]})" if configuration['verbose']
-
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        response = http.post(url.path, JSON.generate(body))
-
-        raise "#{response.code} - #{response.message}" unless response.code.to_i == 200
-
-        json = Direct.parse_json(response.body)
-
-        if json.key?('error_code') && json.key?('error_str')
-          code = json['error_code'].to_i
-          error = json['error_detail'].empty? ? json['error_str'] : json['error_detail']
-          raise "#{code} - #{error}"
+      def self.request(method, path, params = nil)
+        connection = Faraday.new(url: (configuration['sandbox'] ? URL_API_SANDBOX : URL_API)) do |faraday|
+          faraday.adapter  Faraday.default_adapter
         end
 
-        json['data']
+        response = connection.post(path, {
+           'method' => method,
+           'params' => params || {}
+        }.to_json, {
+           'Authorization' => "Bearer #{configuration['token']}",
+           'Client-Login' => configuration['login'],
+           'Accept-Language' => configuration['locale'],
+           'Content-Type' => 'application/json; charset=utf-8'
+        })
+
+        response = JSON.parse(response.body)
+
+        if (error = response['error'])
+          raise Error.new(error['request_id'], error['error_code'], error['error_string'], error['error_detail'])
+        end
+
+        response
       end
     end
   end

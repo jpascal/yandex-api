@@ -2,17 +2,14 @@ development:
     token: token
     login: login
     locale: ru
-    verbose: true
     sandbox: true
 test:
     token: token
     login: login
     locale: ru
-    verbose: true
     sandbox: true
 production:
     token: token
     login: login
     locale: ru
-    verbose: true
     sandbox: true

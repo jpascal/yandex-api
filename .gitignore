@@ -6,3 +6,4 @@ pkg
 yandex-api.iml
 spec/yandex*.yml
 .idea
+yandex_direct.yml
