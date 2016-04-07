@@ -10,6 +10,7 @@ require 'active_model/serializers/json'
 
 require_relative 'direct/error'
 require_relative 'direct/request'
+require_relative 'direct/action_result'
 require_relative 'direct/base'
 require_relative 'direct/campaign'
 require_relative 'direct/bid'

@@ -2,7 +2,12 @@ module Yandex::API::Direct
   class Base
     include ActiveModel::Model
     include ActiveModel::Serialization
+    attr_accessor :errors
     class << self
+      def initialize(*args)
+        self.errors = []
+        super
+      end
       def fields(*args)
         @attributes = *args
         attr_accessor *args

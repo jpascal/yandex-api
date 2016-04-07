@@ -24,9 +24,14 @@ module Yandex::API::Direct
       (self.selection_criteria ||= {}).merge!(criteria)
       self
     end
-    def call(method)
-      puts "[#{self.object.name}](#{method}): #{self.to_param}"
+    def operation(method)
+      puts "[#{self.object.name}](o:#{method}): #{self.to_param}"
       Yandex::API::Direct.decode(self.object, Yandex::API::Direct.request(method, self.object.path, self.to_param))
+    end
+    def function(function, key)
+      puts "[#{self.object.name}](f:#{function}): #{self.to_param}"
+      response = Yandex::API::Direct.request(function, self.object.path, self.to_param)['result'] || {}
+      response[key.to_s].map{|attributes| Yandex::API::Direct::ActionResult.new(attributes.merge({'Function' => function.to_s}))}
     end
 
     def to_param(hash = {})
