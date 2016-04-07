@@ -9,11 +9,13 @@ require 'active_model'
 require 'active_model/serializers/json'
 
 require_relative 'direct/error'
-require_relative 'direct/request'
+require_relative 'direct/selection_criteria'
+require_relative 'direct/exception_notification'
 require_relative 'direct/action_result'
+
 require_relative 'direct/base'
+
 require_relative 'direct/campaign'
-require_relative 'direct/bid'
 require_relative 'direct/bid'
 
 module Yandex
@@ -53,7 +55,7 @@ module Yandex
 
         response = connection.post(path, {
            'method' => method,
-           'params' => params || {}
+           'params' => params.to_param || {}
         }.to_json, {
            'Authorization' => "Bearer #{configuration['token']}",
            'Client-Login' => configuration['login'],
@@ -69,7 +71,7 @@ module Yandex
           raise Error.new(error['request_id'], error['error_code'], error['error_string'], error['error_detail'])
         end
 
-        response
+        response['result']
       end
     end
   end

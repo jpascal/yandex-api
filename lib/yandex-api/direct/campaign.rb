@@ -1,38 +1,67 @@
 module Yandex::API::Direct
   class Campaign < Base
-    fields :Id, :Name
+    ATTRIBUTES = :Id, :Name, :ClientInfo, :StartDate, :EndDate, :TimeTargeting, :TimeZone, :NegativeKeywords,
+        :BlockedIps, :ExcludedSites, :DailyBudget, :Notification, :Type, :Status, :State, :StatusPayment,
+        :StatusClarification, :SourceId, :Statistics, :Currency, :Funds, :RepresentedBy
 
-    def self.get(id)
-      self.select(self.attributes).where(Ids: Array(id)).limit(1).operation(:get).first
+    attr_accessor *ATTRIBUTES
+
+    def self.get(selection_criteria)
+      response = Yandex::API::Direct.request('get', self.path, selection_criteria.fields(*ATTRIBUTES))
+      response.fetch('Campaigns',[]).map{|attributes| self.new(attributes)}
     end
 
-    def self.all
-      self.select(self.attributes).operation(:get)
+    def self.find(id)
+      self.where(Ids: Array(id)).call(:get).first
+    end
+
+    def self.archive(selection_criteria)
+      response = Yandex::API::Direct.request('archive', self.path, selection_criteria)
+      response.fetch('ArchiveResults',[]).map{|attributes| Yandex::API::Direct::ActionResult.new(attributes)}
     end
 
     def archive
-      (self.errors = self.class.where(Ids: [self.Id]).function(:archive, :ArchiveResults).first).success?
+      self.class.where(Ids: [self.Id]).call(:archive).first
+    end
+
+    def self.unarchive(selection_criteria)
+      response = Yandex::API::Direct.request('unarchive', self.path, selection_criteria)
+      response.fetch('UnarchiveResults',[]).map{|attributes| Yandex::API::Direct::ActionResult.new(attributes)}
     end
 
     def unarchive
-      (self.errors = self.class.where(Ids: [self.Id]).function(:unarchive, :UnarchiveResults).first).success?
+      self.class.where(Ids: [self.Id]).call(:unarchive).first
+    end
+
+    def self.resume(selection_criteria)
+      response = Yandex::API::Direct.request('resume', self.path, selection_criteria)
+      response.fetch('ResumeResults',[]).map{|attributes| Yandex::API::Direct::ActionResult.new(attributes)}
     end
 
     def resume
-      (self.errors = self.class.where(Ids: [self.Id]).function(:resume, :ResumeResults).first).success?
+      self.class.where(Ids: [self.Id]).call(:resume).first
+    end
+
+    def self.suspend(selection_criteria)
+      response = Yandex::API::Direct.request('suspend', self.path, selection_criteria)
+      response.fetch('SuspendResults',[]).map{|attributes| Yandex::API::Direct::ActionResult.new(attributes)}
     end
 
     def suspend
-      (self.errors = self.class.where(Ids: [self.Id]).function(:suspend, :SuspendResults).first).success?
+      self.class.where(Ids: [self.Id]).call(:suspend).first
     end
 
-    # add
-    # update
-    # delete
-    # suspend
-    # resume
-    # archive
-    # unarchive
-    # get
+    def self.delete(selection_criteria)
+      response = Yandex::API::Direct.request('delete', self.path, selection_criteria)
+      response.fetch('DeleteResults', []).map{|attributes| Yandex::API::Direct::ActionResult.new(attributes)}
+    end
+
+    def delete
+      self.class.where(Ids: [self.Id]).call(:delete).first
+    end
+
+    # TODO: add, update
+    # TODO: TextCampaign, DynamicTextCampaign, MobileAppCampaign
+
   end
 end
