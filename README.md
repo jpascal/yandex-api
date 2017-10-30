@@ -10,6 +10,13 @@ Modules:
 *  Translate - contain methods for work with Yandex.Translate (http://translate.yandex.ru/)
 *  Disk - contain methods for work with Yandex.Disk (http://disk.yandex.ru/)
 
+To get your `access_token`:
+
+1. Register your app at [Yandex](https://oauth.yandex.ru/client/new)
+    1. Be sure to check 'Yandex.Disk permits'
+    2. Be sure to check 'Client for development' (it will set https://oauth.yandex.ru/verification_code?dev=True as `Callback URI`)
+2. Get access token https://oauth.yandex.ru/authorize?response_type=token&client_id=YOUR_APP_ID
+3. Get your access token from redirect url (right from the browser, it will be one of parameters)
 
 ## Installation
 
@@ -79,7 +86,7 @@ Create configuration file yandex_translate.yml
 	    token: "token"
         ui: "ru"
         verbose: true
-        
+
 Create yandex_translate.rb in config/initializers
 
     Yandex::API::Translate.load File.join(Rails.root,"config","yandex_translate.yml"), Rails.env
@@ -133,6 +140,17 @@ Create configuration file yandex_disk.yml
     Storage.clean(path)         # clean trash (if path nil, clena all)
     Storage.mkdir(path)         # create directory
     Storage.exists?(path)       # existing path or not?
+
+### Using it with [backup gem](https://github.com/meskyanichi/backup)
+
+    require 'yandex-api/disk/backup_storage'
+
+    Backup::Model.new(:my_backup, 'Description for my_backup') do
+      store_with Yandex::API::Disk::BackupStorage do |disk|
+        disk.access_token = 'YOUR_ACCESS_TOKEN'
+        disk.keep         = 5
+      end
+    end
 
 ## Contributing
 
