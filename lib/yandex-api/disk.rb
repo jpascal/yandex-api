@@ -13,10 +13,14 @@ module Yandex
         @configuration
       end
 
+      def self.configuration=(config)
+        @configuration = config
+      end
+
       def self.load file, env = nil
         @environment = env.to_s if env
         config = YAML.load_file(file)
-        @configuration = defined?(@environment) ? config[@environment] : config
+        self.configuration = defined?(@environment) ? config[@environment] : config
       end
 
       def self.parse_json json
@@ -26,7 +30,7 @@ module Yandex
           raise RuntimeError.new "#{e.message} in response"
         end
       end
-      
+
       def self.connection
         return @connection if defined? @connection
         uri = URI.parse(URL_API)
@@ -96,7 +100,7 @@ module Yandex
 
       class Object < BaseStruct.new(:name, :size, :created, :modified, :mime_type, :md5, :media_type, :path)
       end
-      
+
       class Folder < BaseStruct.new(:name, :path, :modified, :created)
       end
 
